@@ -8,6 +8,10 @@ import react from '@astrojs/react';
 export default defineConfig({
   output: 'static',
   site: 'https://ethanmiller.me',
+  trailingSlash: 'ignore',
+  build: {
+    format: 'directory'
+  },
   integrations: [
     mdx({
       remarkPlugins: [],
