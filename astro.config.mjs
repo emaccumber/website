@@ -11,7 +11,11 @@ export default defineConfig({
   base: '/website',
   trailingSlash: 'ignore',
   build: {
-    format: 'directory'
+    format: 'directory',
+    assets: '_astro'
+  },
+  server: {
+    host: true
   },
   integrations: [
     mdx({

@@ -9,15 +9,22 @@ import { getMediaUrl } from '../lib/mediaUrl';
   description="Photography and films by Ethan MacCumber. Explore visual storytelling through photographs and moving images."
 >
   <div class="featured-image-container">
-    <Image 
-      src={getMediaUrl('/images/featured.jpg')}
-      alt="Featured photograph"
-      class="featured-image"
-      width={1920}
-      height={1080}
-      loading="eager"
-      layout="full-width"
-    />
+    {import.meta.env.PUBLIC_MEDIA_URL ? (
+      <Image 
+        src={getMediaUrl('/images/featured.jpg')}
+        alt="Featured photograph"
+        class="featured-image"
+        width={1920}
+        height={1080}
+        loading="eager"
+        layout="full-width"
+      />
+    ) : (
+      <div class="placeholder-content">
+        <h1 class="site-title">Ethan MacCumber</h1>
+        <p class="site-subtitle">Photography & Film</p>
+      </div>
+    )}
   </div>
 </MainLayout>
 
@@ -39,9 +46,42 @@ import { getMediaUrl } from '../lib/mediaUrl';
     object-position: center;
   }
 
+  .placeholder-content {
+    text-align: center;
+    color: #333;
+  }
+
+  body.dark-mode .placeholder-content {
+    color: #fff;
+  }
+
+  .site-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+  }
+
+  .site-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0;
+  }
+
+  body.dark-mode .site-subtitle {
+    color: #aaa;
+  }
+
   @media (max-width: 768px) {
     .featured-image-container {
       height: calc(100vh - 60px);
+    }
+
+    .site-title {
+      font-size: 2rem;
+    }
+
+    .site-subtitle {
+      font-size: 1rem;
     }
   }
 </style>
