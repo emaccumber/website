@@ -1,0 +1,175 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { getMediaUrl } from '../../lib/mediaUrl';
+
+// Get all photo albums from content collections
+const photoAlbums = await getCollection('photos');
+
+// Get the original albums.json data for order and cover images
+const albumsData = {
+  "albums": [
+    {
+      "id": "rabat",
+      "title": "Rabat",
+      "slug": "rabat",
+      "description": "These photographs will accompany an upcoming book about the history of women's health in Morocco. All were taken at l'Hôpital de Maternité et Santé Reproductrice les Orangers.",
+      "coverImage": "/images/photographs/rabat/cover.jpg"
+    },
+    {
+      "id": "tamarac",
+      "title": "Tamarac",
+      "slug": "tamarac",
+      "description": "",
+      "coverImage": "/images/photographs/tamarac/cover.jpg"
+    },
+    {
+      "id": "camogli",
+      "title": "Camogli",
+      "slug": "camogli",
+      "description": "",
+      "coverImage": "/images/photographs/camogli/cover.jpg"
+    },
+    {
+      "id": "iowa",
+      "title": "Iowa",
+      "slug": "iowa",
+      "description": "",
+      "coverImage": "/images/photographs/iowa/cover.jpg"
+    },
+    {
+      "id": "party",
+      "title": "Party",
+      "slug": "party",
+      "description": "",
+      "coverImage": "/images/photographs/party/cover.jpg"
+    },
+    {
+      "id": "graduation",
+      "title": "Graduates",
+      "slug": "graduation",
+      "description": "",
+      "coverImage": "/images/photographs/graduation/cover.jpg"
+    }
+  ]
+};
+---
+
+<MainLayout title="Photographs - Ethan MacCumber">
+  <div class="albums-container">
+    <div class="albums-grid">
+      {albumsData.albums.map((album) => (
+        <a href={`/photographs/${album.slug}`} class="album-card">
+          <div class="album-image-container">
+            <Image 
+              src={getMediaUrl(album.coverImage)}
+              alt={`${album.title} album cover`}
+              class="album-image"
+              width={800}
+              height={600}
+              layout="constrained"
+            />
+          </div>
+          <div class="album-info">
+            <h2 class="album-title">{album.title}</h2>
+            {album.description && (
+              <p class="album-description">{album.description}</p>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .albums-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem 2rem;
+    margin-top: 2rem;
+  }
+
+  .album-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+
+  .album-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .album-image-container {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  body.dark-mode .album-image-container {
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+  }
+
+  .album-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .album-card:hover .album-image {
+    transform: scale(1.02);
+  }
+
+  .album-info {
+    padding: 0 0.5rem;
+  }
+
+  .album-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  body.dark-mode .album-title {
+    color: #fff;
+  }
+
+  .album-description {
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+    font-size: 0.9rem;
+    text-align: center;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  body.dark-mode .album-description {
+    color: #aaa;
+  }
+
+  @media (max-width: 768px) {
+    .albums-container {
+      padding: 1rem;
+    }
+
+    .albums-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

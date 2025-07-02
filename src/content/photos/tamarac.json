@@ -1,0 +1,30 @@
+{
+    "title": "Tamarac",
+    "description": "",
+    "photos": [
+      {
+        "id": 1,
+        "src": "/images/photographs/tamarac/1.jpg",
+        "caption": "Breakfast with dad and grandpa Billy, Tamarac, Florida, 2021",
+        "description": ""
+      },
+      {
+        "id": 2,
+        "src": "/images/photographs/tamarac/2.jpg",
+        "caption": "Tamarac, Florida, 2021",
+        "description": ""
+      },
+      {
+        "id": 3,
+        "src": "/images/photographs/tamarac/3.jpg",
+        "caption": "Tamarac, Florida, 2021",
+        "description": ""
+      },
+      {
+        "id": 4,
+        "src": "/images/photographs/tamarac/4.jpg",
+        "caption": "Tamarac, Florida, 2021",
+        "description": ""
+      }
+    ]
+  }

@@ -1,0 +1,173 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+import { getMediaUrl } from '../../lib/mediaUrl';
+
+// Get all films from content collections
+const allFilms = await getCollection('films');
+
+// Organize films data similar to original structure
+const filmsData = {
+  "films": [
+    {
+      "id": "months-at-home",
+      "title": "Months at Home",
+      "slug": "months-at-home", 
+      "description": "Submitted for BA in Cinema and Media Studies at University of Chicago. © 2021",
+      "coverImage": "/videos/films/months-at-home/cover.mp4"
+    },
+    {
+      "id": "16mm-project",
+      "title": "Lakeview / Hyde Park",
+      "slug": "16mm-project",
+      "description": "These images represent the backdrops of my life in Chicago. © 2020",
+      "coverImage": "/videos/films/16mm-project/cover.mp4",
+      "type": "moving-image-album"
+    }
+  ]
+};
+---
+
+<MainLayout title="Films - Ethan MacCumber">
+  <div class="films-container">
+    <div class="films-grid">
+      {filmsData.films.map((film) => (
+        <a href={`/films/${film.slug}`} class="film-card">
+          <div class="film-video-container">
+            <video 
+              class="film-video"
+              muted
+              loop
+              preload="metadata"
+              onmouseenter="this.play()"
+              onmouseleave="this.pause(); this.currentTime = 0;"
+            >
+              <source src={getMediaUrl(film.coverImage)} type="video/mp4" />
+            </video>
+          </div>
+          <div class="film-info">
+            <h2 class="film-title">{film.title}</h2>
+            <p class="film-description">{film.description}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .films-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .films-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 4rem 3rem;
+    margin-top: 2rem;
+  }
+
+  .film-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+
+  .film-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .film-video-container {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  body.dark-mode .film-video-container {
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+  }
+
+  .film-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .film-card:hover .film-video {
+    transform: scale(1.02);
+  }
+
+  .film-info {
+    padding: 0 0.5rem;
+  }
+
+  .film-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin: 0 0 0.75rem 0;
+    color: #333;
+    letter-spacing: 0.01em;
+  }
+
+  body.dark-mode .film-title {
+    color: #fff;
+  }
+
+  .film-description {
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+    font-size: 0.95rem;
+  }
+
+  body.dark-mode .film-description {
+    color: #aaa;
+  }
+
+  @media (max-width: 768px) {
+    .films-container {
+      padding: 1rem;
+    }
+
+    .films-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .film-video-container {
+      aspect-ratio: 4/3;
+    }
+
+    /* Disable hover effects on mobile */
+    .film-video-container video {
+      pointer-events: none;
+    }
+  }
+
+  @media (hover: none) {
+    /* Disable video hover on touch devices */
+    .film-video-container video {
+      pointer-events: none;
+    }
+  }
+</style>
+
+<script>
+  // Mobile detection for video hover functionality
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    // Remove hover functionality on mobile devices
+    document.querySelectorAll('.film-video').forEach(video => {
+      video.removeAttribute('onmouseenter');
+      video.removeAttribute('onmouseleave');
+    });
+  }
+</script>

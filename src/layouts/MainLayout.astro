@@ -1,0 +1,186 @@
+---
+import Header from '../components/Header.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Ethan MacCumber's personal website" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <!-- Vega/Altair dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: #333;
+    background: #fff;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Dark mode styles */
+  body.dark-mode {
+    background: #000 !important;
+    color: #e0e0e0;
+  }
+
+  html:has(body.dark-mode) {
+    background: #000 !important;
+  }
+
+  body.dark-mode h1,
+  body.dark-mode h2,
+  body.dark-mode h3,
+  body.dark-mode h4,
+  body.dark-mode h5,
+  body.dark-mode h6 {
+    color: #fff;
+  }
+
+  /* Convert light gray (#666, #999) to dark gray in dark mode */
+  body.dark-mode [style*="color: #666"],
+  body.dark-mode [style*="color: #999"] {
+    color: #888 !important;
+  }
+
+  /* Links in dark mode */
+  body.dark-mode a {
+    color: #e0e0e0;
+  }
+
+  /* Code blocks in dark mode */
+  body.dark-mode pre,
+  body.dark-mode code {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+  }
+
+  /* Blockquotes in dark mode */
+  body.dark-mode blockquote {
+    border-left-color: #444;
+    color: #ccc;
+  }
+
+  /* Tables in dark mode */
+  body.dark-mode table {
+    color: #e0e0e0;
+  }
+
+  body.dark-mode th {
+    border-bottom-color: #666;
+  }
+
+  body.dark-mode td {
+    border-bottom-color: #333;
+  }
+
+  /* Smooth transition for theme switching */
+  body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  main {
+    min-height: calc(100vh - 80px);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+    color: #666;
+  }
+
+  body.dark-mode p {
+    color: #ccc;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    main {
+      padding: 0 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  // Dark mode initialization
+  function initDarkMode() {
+    const darkMode = localStorage.getItem('darkMode');
+    if (darkMode === 'true' || (!darkMode && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.body.classList.add('dark-mode');
+    }
+  }
+
+  // Run on page load
+  initDarkMode();
+
+  // Listen for storage changes (when user changes theme in another tab)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'darkMode') {
+      initDarkMode();
+    }
+  });
+</script>

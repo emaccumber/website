@@ -1,0 +1,14 @@
+---
+import AltairChart from './AltairChart';
+
+export interface Props {
+  spec: object | string;
+  width?: number;
+  height?: number;
+  className?: string;
+}
+
+const props = Astro.props;
+---
+
+<AltairChart {...props} client:visible />

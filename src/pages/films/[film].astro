@@ -1,0 +1,175 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import VimeoPlayer from '../../components/VimeoPlayer';
+import ClipViewer from '../../components/ClipViewer';
+
+export async function getStaticPaths() {
+  const films = await getCollection('films');
+  return films.map((film) => ({
+    params: { film: film.id },
+    props: { film }
+  }));
+}
+
+interface Props {
+  film: CollectionEntry<'films'>;
+}
+
+const { film } = Astro.props;
+const { data } = film;
+
+// Type guard to check if film has clips
+function isMovingImageAlbum(filmData: any): filmData is { type: 'moving-image-album'; clips: any[] } {
+  return filmData.type === 'moving-image-album' && filmData.clips;
+}
+---
+
+<MainLayout title={`${data.title} - Films`}>
+  <div class="film-container">
+    {isMovingImageAlbum(data) ? (
+      <!-- Moving Image Album -->
+      <div class="moving-image-container">
+        <ClipViewer clips={data.clips} client:load />
+        
+        <div class="film-info">
+          <h1 class="film-title">{data.title}</h1>
+          {data.date && <p class="film-date">{data.date}</p>}
+          {data.description && (
+            <div class="film-description">
+              {data.description.split('\n\n').map((paragraph: string) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    ) : (
+      <!-- Regular Vimeo Film -->
+      <div class="vimeo-film-container">
+        {data.vimeoId && (
+          <VimeoPlayer vimeoId={data.vimeoId} client:load />
+        )}
+        
+        <div class="film-info">
+          {data.subtitle && <h1 class="film-title">{data.subtitle}</h1>}
+          {data.director && <p class="film-director">{data.director}</p>}
+          {data.filmmaker && <p class="film-maker">{data.filmmaker}</p>}
+          {data.date || data.year && <p class="film-date">{data.date || data.year}</p>}
+          {data.description && (
+            <div class="film-description">
+              {data.description.split('\n\n').map((paragraph: string) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    <nav class="film-nav">
+      <a href="/films" class="back-link">← Back to Films</a>
+    </nav>
+  </div>
+</MainLayout>
+
+<style>
+  .film-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .moving-image-container,
+  .vimeo-film-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 3rem;
+  }
+
+  .film-info {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .film-title {
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+    color: #333;
+  }
+
+  body.dark-mode .film-title {
+    color: #fff;
+  }
+
+  .film-director,
+  .film-maker,
+  .film-date {
+    color: #666;
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  body.dark-mode .film-director,
+  body.dark-mode .film-maker,
+  body.dark-mode .film-date {
+    color: #aaa;
+  }
+
+  .film-description {
+    margin-top: 1.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .film-description p {
+    color: #666;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+
+  body.dark-mode .film-description p {
+    color: #aaa;
+  }
+
+  .film-nav {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+
+  body.dark-mode .film-nav {
+    border-top-color: #333;
+  }
+
+  .back-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: #333;
+  }
+
+  body.dark-mode .back-link {
+    color: #aaa;
+  }
+
+  body.dark-mode .back-link:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .film-container {
+      padding: 1rem;
+    }
+
+    .film-title {
+      font-size: 2rem;
+    }
+  }
+</style>

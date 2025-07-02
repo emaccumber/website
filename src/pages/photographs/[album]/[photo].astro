@@ -1,0 +1,45 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import PhotoViewer from '../../../components/PhotoViewer.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const photoAlbums = await getCollection('photos');
+  const paths = [];
+  
+  for (const album of photoAlbums) {
+    for (let i = 0; i < album.data.photos.length; i++) {
+      paths.push({
+        params: { 
+          album: album.id,
+          photo: i.toString()
+        },
+        props: { 
+          album,
+          photoIndex: i
+        }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+interface Props {
+  album: CollectionEntry<'photos'>;
+  photoIndex: number;
+}
+
+const { album, photoIndex } = Astro.props;
+const { data } = album;
+const currentPhoto = data.photos[photoIndex];
+---
+
+<MainLayout title={`${currentPhoto.caption} - ${data.title}`}>
+  <PhotoViewer 
+    photos={data.photos}
+    currentIndex={photoIndex}
+    albumSlug={album.id}
+    albumTitle={data.title}
+  />
+</MainLayout>

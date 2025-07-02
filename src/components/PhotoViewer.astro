@@ -1,0 +1,213 @@
+---
+import { Image } from 'astro:assets';
+import { getMediaUrl } from '../lib/mediaUrl';
+
+export interface Props {
+  photos: Array<{
+    src: string;
+    caption: string;
+    description?: string;
+  }>;
+  currentIndex: number;
+  albumSlug: string;
+  albumTitle: string;
+}
+
+const { photos, currentIndex, albumSlug, albumTitle } = Astro.props;
+const currentPhoto = photos[currentIndex];
+const hasPrevious = currentIndex > 0;
+const hasNext = currentIndex < photos.length - 1;
+---
+
+<div class="photo-viewer">
+  <div class="photo-container">
+    <Image 
+      src={getMediaUrl(currentPhoto.src)}
+      alt={currentPhoto.caption}
+      class="main-photo"
+      width={1200}
+      height={900}
+      loading="eager"
+      layout="constrained"
+    />
+  </div>
+
+  <div class="photo-info">
+    <p class="photo-caption">{currentPhoto.caption}</p>
+    {currentPhoto.description && (
+      <p class="photo-description">{currentPhoto.description}</p>
+    )}
+  </div>
+
+  <nav class="photo-nav">
+    <div class="nav-controls">
+      {hasPrevious ? (
+        <a href={`/photographs/${albumSlug}/${currentIndex - 1}`} class="nav-button prev">
+          ← Previous
+        </a>
+      ) : (
+        <span class="nav-button disabled">← Previous</span>
+      )}
+
+      <span class="nav-counter">
+        {currentIndex + 1} of {photos.length}
+      </span>
+
+      {hasNext ? (
+        <a href={`/photographs/${albumSlug}/${currentIndex + 1}`} class="nav-button next">
+          Next →
+        </a>
+      ) : (
+        <span class="nav-button disabled">Next →</span>
+      )}
+    </div>
+
+    <a href={`/photographs/${albumSlug}`} class="back-link">
+      ← Back to {albumTitle}
+    </a>
+  </nav>
+</div>
+
+<style>
+  .photo-viewer {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .photo-container {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .main-photo {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  body.dark-mode .main-photo {
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+  }
+
+  .photo-info {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .photo-caption {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 0.5rem 0;
+    font-style: italic;
+  }
+
+  body.dark-mode .photo-caption {
+    color: #aaa;
+  }
+
+  .photo-description {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  body.dark-mode .photo-description {
+    color: #999;
+  }
+
+  .photo-nav {
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+  }
+
+  body.dark-mode .photo-nav {
+    border-top-color: #333;
+  }
+
+  .nav-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .nav-button {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-button:not(.disabled):hover {
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  body.dark-mode .nav-button:not(.disabled):hover {
+    background: #222;
+    color: #fff;
+  }
+
+  .nav-button.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  body.dark-mode .nav-button {
+    color: #aaa;
+  }
+
+  body.dark-mode .nav-button.disabled {
+    color: #555;
+  }
+
+  .nav-counter {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  body.dark-mode .nav-counter {
+    color: #aaa;
+  }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: #333;
+  }
+
+  body.dark-mode .back-link {
+    color: #aaa;
+  }
+
+  body.dark-mode .back-link:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .photo-viewer {
+      padding: 1rem;
+    }
+
+    .nav-controls {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-button {
+      font-size: 0.85rem;
+    }
+  }
+</style>

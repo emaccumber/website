@@ -1,0 +1,199 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post }
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<MainLayout title={`${post.data.title} - Writing`}>
+  <article class="post-container">
+    <header class="post-header">
+      <h1 class="post-title">{post.data.title}</h1>
+      <time class="post-date">{post.data.date}</time>
+    </header>
+
+    <div class="post-content">
+      <Content />
+    </div>
+
+    <nav class="post-nav">
+      <a href="/writing" class="back-link">← Back to Writing</a>
+    </nav>
+  </article>
+</MainLayout>
+
+<style>
+  .post-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .post-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  body.dark-mode .post-header {
+    border-bottom-color: #333;
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+    color: #333;
+    line-height: 1.2;
+  }
+
+  body.dark-mode .post-title {
+    color: #fff;
+  }
+
+  .post-date {
+    color: #666;
+    font-size: 1rem;
+  }
+
+  body.dark-mode .post-date {
+    color: #aaa;
+  }
+
+  .post-content {
+    line-height: 1.7;
+    font-size: 1.1rem;
+  }
+
+  .post-content :global(h2) {
+    font-size: 1.8rem;
+    margin: 2rem 0 1rem 0;
+    color: #333;
+  }
+
+  body.dark-mode .post-content :global(h2) {
+    color: #fff;
+  }
+
+  .post-content :global(h3) {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 0.75rem 0;
+    color: #333;
+  }
+
+  body.dark-mode .post-content :global(h3) {
+    color: #fff;
+  }
+
+  .post-content :global(p) {
+    margin: 1rem 0;
+    color: #444;
+  }
+
+  body.dark-mode .post-content :global(p) {
+    color: #ddd;
+  }
+
+  .post-content :global(a) {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+
+  body.dark-mode .post-content :global(a) {
+    color: #66aaff;
+  }
+
+  .post-content :global(blockquote) {
+    border-left: 4px solid #ddd;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #666;
+    font-style: italic;
+  }
+
+  body.dark-mode .post-content :global(blockquote) {
+    border-left-color: #444;
+    color: #aaa;
+  }
+
+  .post-content :global(code) {
+    background: #f5f5f5;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+  }
+
+  body.dark-mode .post-content :global(code) {
+    background: #2a2a2a;
+  }
+
+  .post-content :global(pre) {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  body.dark-mode .post-content :global(pre) {
+    background: #1a1a1a;
+  }
+
+  .post-nav {
+    text-align: center;
+    padding-top: 3rem;
+    margin-top: 3rem;
+    border-top: 1px solid #eee;
+  }
+
+  body.dark-mode .post-nav {
+    border-top-color: #333;
+  }
+
+  .back-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: #333;
+  }
+
+  body.dark-mode .back-link {
+    color: #aaa;
+  }
+
+  body.dark-mode .back-link:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .post-container {
+      padding: 1rem;
+    }
+
+    .post-title {
+      font-size: 2rem;
+    }
+
+    .post-content {
+      font-size: 1rem;
+    }
+  }
+</style>
