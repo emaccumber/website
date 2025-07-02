@@ -7,7 +7,8 @@ import react from '@astrojs/react';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  site: 'https://ethanmiller.me',
+  site: 'https://emaccumber.github.io',
+  base: '/website',
   trailingSlash: 'ignore',
   build: {
     format: 'directory'
