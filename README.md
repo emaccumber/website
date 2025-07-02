@@ -1,4 +1,4 @@
-# Personal Website - Ethan MacCumber
+# Personal Website
 
 A modern, minimalist portfolio website showcasing photography, films, and writing. Built with Astro for optimal performance and simplicity.
 
